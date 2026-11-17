@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingBottom="8dp">
+    android:layout_marginBottom="6dp"
+    android:background="@drawable/bg_glass_card"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/time_range"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_glass_card"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="14dp">
+        android:layout_weight="1"
+        android:fontFeatureSettings="tnum"
+        android:textAppearance="@style/TextAppearance.Notes.Body"
+        android:textSize="14sp"
+        tools:text="10:30 AM – 10:45 AM" />
 
-        <TextView
-            android:id="@+id/time_range"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/glass_text_primary"
-            android:textSize="15sp"
-            tools:text="10:30 AM \u2013 10:45 AM" />
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFeatureSettings="tnum"
+        android:textAppearance="@style/TextAppearance.Notes.Meta"
+        android:textSize="13sp"
+        tools:text="15 min" />
 
-        <TextView
-            android:id="@+id/duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/glass_text_secondary"
-            android:textSize="13sp"
-            tools:text="15 min" />
-
-    </LinearLayout>
-</FrameLayout>
+</LinearLayout>

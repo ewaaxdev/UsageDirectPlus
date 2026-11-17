@@ -127,4 +127,17 @@
     <string name="recap_accuracy_difference">Stored daily totals differ from the session log by %1$s; the next sync reconciles them.</string>
     <string name="recap_duration_hours">%1$dh %2$dm</string>
     <string name="recap_duration_minutes">%1$dm</string>
+
+    <string name="usage_sessions">Sessions</string>
+    <string name="usage_no_sessions">No sessions</string>
+    <string name="usage_duration_seconds">%1$ds</string>
+    <string name="usage_notes_hint">No notes for this day yet — tap to add one</string>
+    <plurals name="usage_session_meta">
+        <item quantity="one">1 session · %2$s – %3$s</item>
+        <item quantity="other">%1$d sessions · %2$s – %3$s</item>
+    </plurals>
+    <plurals name="usage_notes_preview">
+        <item quantity="one">1 note · %2$s</item>
+        <item quantity="other">%1$d notes · %2$s</item>
+    </plurals>
 </resources>
