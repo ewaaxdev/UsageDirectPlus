@@ -3,6 +3,7 @@ package godau.fynn.usagedirectplus.persistence
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
+import godau.fynn.usagedirectplus.SimpleUsageStat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
