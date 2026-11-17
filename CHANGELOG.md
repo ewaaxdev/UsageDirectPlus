@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- notes: keep long-form notes per app and day, with tags, search, edit and delete
+- import database: merge an exported database back without losing existing rows
+- glass-styled notes, note editor and usage interval rows
+
+### Fixed
+
+- flush the write-ahead log before exporting so the newest rows are included in the backup
+- keep all exported notes and usage rows intact when merging a database from another device
+
 ## [0.9.3] - 2026-10-15
 
 ### Fixed

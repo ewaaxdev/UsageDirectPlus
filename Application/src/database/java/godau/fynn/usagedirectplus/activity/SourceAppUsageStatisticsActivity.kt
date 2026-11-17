@@ -26,6 +26,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
@@ -36,6 +37,7 @@ import godau.fynn.usagedirectplus.SimpleUsageStat
 import godau.fynn.usagedirectplus.persistence.EventLogRunnable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import godau.fynn.usagedirectplus.persistence.HistoryDatabase
+import godau.fynn.usagedirectplus.persistence.Import
 import godau.fynn.usagedirectplus.view.adapter.database.DatabaseTimespanPagerAdapter
 import godau.fynn.usagedirectplus.view.dialog.ExportDialog
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +67,12 @@ class SourceAppUsageStatisticsActivity : AppUsageStatisticsActivity() {
     private val colorActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == android.app.Activity.RESULT_OK) {
             reload()
+        }
+    }
+
+    private val importDatabaseLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            importDatabase(uri)
         }
     }
 
@@ -148,6 +156,12 @@ class SourceAppUsageStatisticsActivity : AppUsageStatisticsActivity() {
                     }
                 }
 
+            R.id.menu_notes ->
+                startActivity(Intent(this, NotesActivity::class.java))
+
+            R.id.menu_import_database ->
+                importDatabaseLauncher.launch(arrayOf("*/*"))
+
             R.id.menu_export_database -> {
                 val dialog = ExportDialog(this, exportDirectoryPickerLauncher)
                 currentExportDialog = dialog
@@ -172,6 +186,24 @@ class SourceAppUsageStatisticsActivity : AppUsageStatisticsActivity() {
 
         super.onCreateOptionsMenu(menu)
         return true
+    }
+
+    private fun importDatabase(uri: Uri) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val message = try {
+                val result = Import.merge(this@SourceAppUsageStatisticsActivity, uri)
+                getString(R.string.import_okay, result.total)
+            } catch (exception: IllegalArgumentException) {
+                getString(R.string.import_invalid)
+            } catch (exception: Exception) {
+                getString(R.string.import_error)
+            }
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@SourceAppUsageStatisticsActivity, message, Toast.LENGTH_LONG).show()
+                reload()
+            }
+        }
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {

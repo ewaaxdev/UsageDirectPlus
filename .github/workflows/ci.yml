@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -32,6 +32,22 @@ jobs:
 
       - name: Build debug APKs (smoke test)
         run: ./gradlew :Application:assembleDatabaseDebug :Application:assembleSystemDebug
+
+      - name: Upload debug APKs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apks
+          path: Application/build/outputs/apk/
+          retention-days: 14
+
+      - name: Upload Room schemas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: room-schemas
+          path: Application/schemas/
+          retention-days: 14
 
       - name: Upload test results
         if: always()

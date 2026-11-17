@@ -36,18 +36,22 @@ class HistoryDatabaseVacuumTest {
 
     @Test
     fun freshInstallMarksCurrentVersionAsAlreadyVacuumed() {
-        openDatabase().close()
+        val database = openDatabase()
+        val currentVersion = database.openHelper.readableDatabase.version
+        database.close()
 
         val lastVacuumedVersion = context
             .getSharedPreferences(HistoryDatabase.DATABASE_NAME, Context.MODE_PRIVATE)
             .getInt(HistoryDatabase.LAST_VACUUMED_VERSION_KEY, 0)
 
-        assertThat(lastVacuumedVersion).isEqualTo(9)
+        assertThat(lastVacuumedVersion).isEqualTo(currentVersion)
     }
 
     @Test
     fun onOpenVacuumsWhenCurrentVersionWasNotVacuumedYet() {
-        openDatabase().close()
+        val initialDatabase = openDatabase()
+        val currentVersion = initialDatabase.openHelper.readableDatabase.version
+        initialDatabase.close()
 
         val dbFile = context.getDatabasePath(HistoryDatabase.DATABASE_NAME)
         SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READWRITE).use { sqliteDb ->
@@ -82,7 +86,7 @@ class HistoryDatabaseVacuumTest {
         val lastVacuumedVersion = context
             .getSharedPreferences(HistoryDatabase.DATABASE_NAME, Context.MODE_PRIVATE)
             .getInt(HistoryDatabase.LAST_VACUUMED_VERSION_KEY, 0)
-        assertThat(lastVacuumedVersion).isEqualTo(9)
+        assertThat(lastVacuumedVersion).isEqualTo(currentVersion)
     }
 
     private fun queryLong(database: SQLiteDatabase, sql: String): Long {

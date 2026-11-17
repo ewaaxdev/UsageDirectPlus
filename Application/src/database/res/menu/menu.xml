@@ -34,9 +34,15 @@
     <item android:id="@+id/menu_restore_hidden"
         app:showAsAction="never"
         android:title="@string/menu_restore_hidden" />
+    <item android:id="@+id/menu_notes"
+        app:showAsAction="never"
+        android:title="@string/menu_notes" />
     <item android:id="@+id/menu_export_database"
         app:showAsAction="never"
         android:title="@string/menu_export" />
+    <item android:id="@+id/menu_import_database"
+        app:showAsAction="never"
+        android:title="@string/menu_import_database" />
     <item android:id="@+id/menu_export_settings"
         app:showAsAction="never"
         android:title="@string/menu_export_settings" />

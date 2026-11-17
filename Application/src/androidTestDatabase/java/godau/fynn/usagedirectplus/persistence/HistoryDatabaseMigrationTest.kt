@@ -211,6 +211,57 @@ class HistoryDatabaseMigrationTest {
         }
     }
 
+    @Test
+    fun migrate9To10_createsNotesTableAndKeepsExistingData() {
+        helper.createDatabase(databaseName, 9).apply {
+            execSQL("INSERT INTO apps(id, applicationId) VALUES (1, 'com.example.app')")
+            execSQL("INSERT INTO usageStats(day, timeUsed, appId, hidden) VALUES (1, 100, 1, 0)")
+            execSQL("INSERT INTO usageIntervals(beginTime, endTime, appId) VALUES (1000, 2000, 1)")
+            close()
+        }
+
+        helper.runMigrationsAndValidate(databaseName, 10, true, *HistoryDatabase.ALL_MIGRATIONS)
+
+        val db = Room.databaseBuilder(context, HistoryDatabase::class.java, databaseName)
+            .addMigrations(*HistoryDatabase.ALL_MIGRATIONS)
+            .allowMainThreadQueries()
+            .build()
+
+        try {
+            val noteId = db.getNotesDao().upsert(
+                Note(
+                    applicationId = "com.example.app",
+                    day = 1,
+                    tag = "focus",
+                    body = "First note after migration"
+                )
+            )
+            assertThat(noteId).isGreaterThan(0L)
+
+            val notes = db.getNotesDao().getAll()
+            assertThat(notes).hasSize(1)
+            assertThat(notes.first().body).isEqualTo("First note after migration")
+            assertThat(notes.first().applicationId).isEqualTo("com.example.app")
+
+            assertThat(db.getUsageStatsDao().getUsageStats()).hasSize(1)
+            assertThat(db.getUsageIntervalDao().getByApp("com.example.app"))
+                .containsExactly(UsageInterval(1000L, 2000L, "com.example.app"))
+
+            val writableDatabase = db.openHelper.writableDatabase
+            val noteIndexes = querySecondColumnStrings(
+                writableDatabase,
+                "PRAGMA index_list(`notes`)"
+            )
+            assertThat(noteIndexes).containsAtLeast(
+                "index_notes_appId",
+                "index_notes_day",
+                "index_notes_updatedAt"
+            )
+        } finally {
+            db.close()
+        }
+    }
+
     private fun queryLong(database: SupportSQLiteDatabase, sql: String): Long {
         database.query(sql).use { cursor ->
             cursor.moveToFirst()

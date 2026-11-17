@@ -13,7 +13,7 @@ import godau.fynn.usagedirectplus.charts.WeeklyAverageBarChart
 import java.time.LocalDate
 
 @Database(
-    version = 9,
+    version = 10,
     entities = [
         StoredUsageStat::class,
         StoredLastUsedStat::class,
@@ -22,7 +22,8 @@ import java.time.LocalDate
         StoredApp::class,
         ScreenEvent::class,
         StoredBrowserTabSession::class,
-        StoredHostname::class
+        StoredHostname::class,
+        StoredNote::class
     ]
 )
 abstract class HistoryDatabase : RoomDatabase() {
@@ -34,6 +35,7 @@ abstract class HistoryDatabase : RoomDatabase() {
     abstract fun getUsageIntervalDao(): UsageIntervalDao
     abstract fun getScreenEventDao(): ScreenEventDao
     abstract fun getBrowserTabSessionDao(): BrowserTabSessionDao
+    abstract fun getNotesDao(): NotesDao
 
     companion object {
         const val DATABASE_NAME = "history"
@@ -51,7 +53,8 @@ abstract class HistoryDatabase : RoomDatabase() {
                     MIGRATION_ADD_INTERVALS_AND_SCREEN_EVENTS,
                     MIGRATION_NORMALIZE_APP_IDS,
                     MIGRATION_ADD_BROWSER_TAB_SESSIONS,
-                    MIGRATION_SIMPLIFY_BROWSER_SESSIONS
+                    MIGRATION_SIMPLIFY_BROWSER_SESSIONS,
+                    MIGRATION_ADD_NOTES
                 )
                 .addCallback(getVacuumCallback(appContext))
                 .build()
@@ -376,6 +379,32 @@ abstract class HistoryDatabase : RoomDatabase() {
             }
         }
 
+        internal val MIGRATION_ADD_NOTES = object : Migration(9, 10) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                Log.d("HistoryDatabase", "Migration 9 → 10: creating notes table")
+
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `notes` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`appId` INTEGER, " +
+                        "`day` INTEGER, " +
+                        "`createdAt` INTEGER NOT NULL, " +
+                        "`updatedAt` INTEGER NOT NULL, " +
+                        "`tag` TEXT, " +
+                        "`body` TEXT NOT NULL)"
+                )
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_notes_appId` ON `notes` (`appId`)"
+                )
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_notes_day` ON `notes` (`day`)"
+                )
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_notes_updatedAt` ON `notes` (`updatedAt`)"
+                )
+            }
+        }
+
         internal val ALL_MIGRATIONS = arrayOf(
             MIGRATION_DAY_TO_DATE,
             MIGRATION_ADD_LAST_USED,
@@ -384,7 +413,8 @@ abstract class HistoryDatabase : RoomDatabase() {
             MIGRATION_ADD_INTERVALS_AND_SCREEN_EVENTS,
             MIGRATION_NORMALIZE_APP_IDS,
             MIGRATION_ADD_BROWSER_TAB_SESSIONS,
-            MIGRATION_SIMPLIFY_BROWSER_SESSIONS
+            MIGRATION_SIMPLIFY_BROWSER_SESSIONS,
+            MIGRATION_ADD_NOTES
         )
     }
 }

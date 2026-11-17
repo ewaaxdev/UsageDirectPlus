@@ -33,6 +33,8 @@ object Export {
     @JvmStatic
     @Throws(IOException::class)
     fun exportHistoryDatabase(saveToData: Intent, context: Context) {
+        checkpoint(context)
+
         val uri = saveToData.data
 
         val parcelFileDescriptor = context.contentResolver
@@ -58,6 +60,8 @@ object Export {
     @JvmStatic
     @Throws(IOException::class)
     fun exportToDirectory(context: Context, directory: DocumentFile, compress: Boolean): ExportResult {
+        checkpoint(context)
+
         val timestamp = SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.US).format(Date())
         val ext = if (compress) "sqlite3.gz" else "sqlite3"
         val filename = "usageDirectPlus-$timestamp.$ext"
@@ -89,5 +93,20 @@ object Export {
         }
 
         return ExportResult(filename, outputFile.uri, mimeType)
+    }
+
+    /**
+     * Flush the write-ahead log into the main database file before it is copied so the export
+     * includes the most recent notes and usage rows. Failures are non-fatal: an export without a
+     * checkpoint is still better than no export.
+     */
+    private fun checkpoint(context: Context) {
+        try {
+            HistoryDatabase.get(context).openHelper.writableDatabase
+                .query("PRAGMA wal_checkpoint(FULL)")
+                .use { }
+        } catch (exception: Exception) {
+            // Non-fatal: an export without a checkpoint is still better than no export.
+        }
     }
 }

@@ -1,10 +1,10 @@
 package godau.fynn.usagedirectplus.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import godau.fynn.usagedirectplus.R
 import godau.fynn.usagedirectplus.databinding.ActivityUsageIntervalsBinding
@@ -52,13 +52,20 @@ class UsageIntervalsActivity : AppCompatActivity() {
             binding.appIcon.visibility = View.GONE
         }
 
+        binding.notesButton.setOnClickListener {
+            startActivity(
+                Intent(this, NotesActivity::class.java)
+                    .putExtra(NotesActivity.EXTRA_APPLICATION_ID, applicationId)
+                    .putExtra(NotesActivity.EXTRA_DAY, day)
+            )
+        }
+
         // Compute day boundaries
         val date = LocalDate.ofEpochDay(day)
         val start = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val end = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         binding.recyclerview.layoutManager = LinearLayoutManager(this)
-        binding.recyclerview.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         lifecycleScope.launch(Dispatchers.IO) {
             val intervals = HistoryDatabase.get(this@UsageIntervalsActivity)

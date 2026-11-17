@@ -72,4 +72,26 @@
 
     <string name="charts_usage_timeline_general">Usage timelines</string>
     <string name="charts_unlock_timeline_general">Unlock timelines</string>
+
+    <string name="menu_notes">Notes</string>
+    <string name="notes_title">Notes</string>
+    <string name="notes_empty">No notes yet. Tap + to write one — they are kept forever.</string>
+    <string name="notes_add">New note</string>
+    <string name="notes_edit">Edit note</string>
+    <string name="notes_delete">Delete note</string>
+    <string name="notes_delete_confirm">Delete this note? This cannot be undone.</string>
+    <string name="notes_search_hint">Search notes</string>
+    <string name="notes_body_hint">Write your note…</string>
+    <string name="notes_tag_hint">Tag (optional)</string>
+    <string name="notes_save">Save</string>
+    <string name="notes_filter">Showing: %1$s</string>
+    <string name="notes_filter_app">app %1$s</string>
+    <string name="notes_filter_day">day %1$s</string>
+    <string name="notes_untagged">No tag</string>
+    <string name="notes_no_search_results">No notes match your search</string>
+
+    <string name="menu_import_database">Import database</string>
+    <string name="import_okay">Import finished: %1$d rows added</string>
+    <string name="import_error">Import failed: the file could not be read</string>
+    <string name="import_invalid">This file is not a UsageDirectPlus database</string>
 </resources>

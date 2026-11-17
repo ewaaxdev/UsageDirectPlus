@@ -10,4 +10,14 @@
         <item name="primaryTabBackground">@color/primaryLight</item>
         <item name="tabText">@color/tab_text_light</item>
     </style>
+
+    <style name="TextAppearance.Notes.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">@color/glass_text_primary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.Notes.Meta" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/glass_text_secondary</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
