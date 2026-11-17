@@ -45,6 +45,29 @@ abstract class UsageStatsDao {
     )
     abstract fun getUsageStats(): Array<SimpleUsageStat>
 
+    @Query(
+        "SELECT COALESCE(sum(timeUsed), 0) FROM usageStats " +
+            "WHERE hidden = 0 AND day BETWEEN :startDay AND :endDay"
+    )
+    abstract fun getTotalTimeUsedBetween(startDay: Long, endDay: Long): Long
+
+    @Query(
+        "SELECT day AS day, sum(timeUsed) AS timeUsed FROM usageStats " +
+            "WHERE hidden = 0 AND day BETWEEN :startDay AND :endDay " +
+            "GROUP BY day ORDER BY day"
+    )
+    abstract fun getTotalTimePerDayBetween(startDay: Long, endDay: Long): List<DayUsageTotal>
+
+    @Query(
+        "SELECT apps.applicationId AS applicationId, sum(usageStats.timeUsed) AS timeUsed " +
+            "FROM usageStats " +
+            "INNER JOIN apps ON apps.id = usageStats.appId " +
+            "WHERE usageStats.hidden = 0 AND usageStats.day BETWEEN :startDay AND :endDay " +
+            "GROUP BY usageStats.appId " +
+            "ORDER BY sum(usageStats.timeUsed) DESC"
+    )
+    abstract fun getTotalTimePerAppBetween(startDay: Long, endDay: Long): List<AppUsageTotal>
+
     @Query("SELECT sum(timeUsed) FROM usageStats WHERE day == :day AND hidden = 0")
     abstract fun getTotalTimeUsed(day: Long): Long
 

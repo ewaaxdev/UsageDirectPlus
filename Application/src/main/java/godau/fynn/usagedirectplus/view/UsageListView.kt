@@ -19,7 +19,6 @@
 package godau.fynn.usagedirectplus.view
 
 import android.content.Context
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import godau.fynn.usagedirectplus.SimpleUsageStat
@@ -32,7 +31,8 @@ class UsageListView(context: Context) : RecyclerView(context) {
     init {
         adapter = usageListAdapter
         layoutManager = LinearLayoutManager(context)
-        addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        clipToPadding = false
+        setPadding(0, (8 * resources.displayMetrics.density).toInt(), 0, (16 * resources.displayMetrics.density).toInt())
 
         // Reduce lag upon initial scroll
         setItemViewCacheSize(6)

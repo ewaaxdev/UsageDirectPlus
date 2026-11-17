@@ -22,6 +22,12 @@
     <application>
 
         <activity
+            android:name=".activity.RecapActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="@string/recap_title"
+            android:parentActivityName=".activity.SourceAppUsageStatisticsActivity" />
+
+        <activity
             android:name=".activity.ColorActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:parentActivityName=".activity.SourceAppUsageStatisticsActivity"

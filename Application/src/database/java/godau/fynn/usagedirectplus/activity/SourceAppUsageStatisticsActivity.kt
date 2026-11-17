@@ -156,6 +156,9 @@ class SourceAppUsageStatisticsActivity : AppUsageStatisticsActivity() {
                     }
                 }
 
+            R.id.menu_recap ->
+                startActivity(Intent(this, RecapActivity::class.java))
+
             R.id.menu_notes ->
                 startActivity(Intent(this, NotesActivity::class.java))
 

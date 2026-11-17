@@ -19,6 +19,10 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_recap"
+        android:title="@string/menu_recap"
+        android:icon="@drawable/ic_recap"
+        app:showAsAction="always" />
     <item android:id="@+id/menu_charts"
         android:title="@string/menu_charts"
         android:icon="@drawable/ic_chart"
